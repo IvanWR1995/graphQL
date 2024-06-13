@@ -1,0 +1,70 @@
+CREATE TABLE students 
+( 
+  student_id SERIAL PRIMARY KEY,
+  player_name TEXT
+);
+
+CREATE TABLE university 
+( 
+  university_id SERIAL,
+  universiry_name text,
+  student_id integer, 
+  constraint fk_tests_students
+     foreign key (student_id) 
+     REFERENCES students (student_id)
+);
+
+query MyQuery {
+  student {
+    name
+    studentId
+    universitiesByStudentId {
+      universityName
+      universityId
+    }
+  }
+}
+
+"""
+query MyQuery {
+  allStudents {
+    nodes {
+      name
+      studentId
+      universitiesByStudentId {
+        nodes {
+          studentId
+          universityId
+          universityName
+        }
+      }
+    }
+  }
+}
+
+mutation myMutation{
+  createStudent(input:{student:{name:"MutationTest"} }) {
+    clientMutationId
+  }
+} 
+
+mutation updateStudent {
+  updateStudent(input: {nodeId:"WyJzdHVkZW50cyIsMzRd", studentPatch:{name:"put1423",}  }) 
+  {
+    clientMutationId
+    student {
+      name
+    }
+  }
+}
+
+mutation {
+ 
+  updateStudentByStudentId(input: {studentPatch: {name: "updated"}, studentId: 1}) {
+    clientMutationId
+  }
+  deleteStudentByStudentId(input: {studentId: 2}) {
+    clientMutationId
+    deletedStudentId
+  }
+}
